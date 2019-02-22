@@ -1,5 +1,5 @@
 
-let weeks = [
+var weeks = [
 	"BBxDxxB",
 	"DxDxxBx",
 	"BDxBxxx",
@@ -10,7 +10,7 @@ let weeks = [
 	"DxBxDxx",
 ];
 
-let cols = [
+var cols = [
 	"VACUUM",
 	"WASHUP",
 	"DUSTING",
@@ -18,7 +18,10 @@ let cols = [
 	"FRIDGE",
 	"STOVE",
 	"BALCONY",
-]
+];
+
+var startingDate = moment("2018-10-01");
+moment.locale('hu');
 
 function getChoreTitle(chore) {
 	switch (chore) {
@@ -46,81 +49,73 @@ function getChoreDescription(chore) {
 	return "";
 }
 
-let startingDate = moment("2018-10-01");
+
+var daniChores = [];
+var balintChores = [];
+var today = "";
+var currentTime;
+var weekStart;
+var weekEnd;
+
+
+function updateWeek(time) {
+	currentTime = time;
+	weekStart = moment(time).startOf("isoWeek").format("MM.DD.");
+	weekEnd = moment(time).endOf("isoWeek").format("MM.DD.");
+	var weeksPassed = time.diff(startingDate, "weeks");
+	var idx = (weeksPassed % 8 + 8) % 8;
+	var row = weeks[idx];
+	var dani = [];
+	var balint = [];
+	for (var i = 0; i < row.length; i++) {
+		switch (row.charAt(i)) {
+			case "D":
+				dani.push(cols[i]);
+				break;
+			case "B":
+				balint.push(cols[i]);
+				break;
+		}
+	}
+
+	daniChores = dani;
+	balintChores = balint;
+	today = time.format("YYYY. MM. DD");
+
+	render();
+}
+
+function moveWeek(num) {
+	updateWeek(moment(currentTime).add(num, "week"));
+}
+
+function moveToNow() {
+	updateWeek(moment().utc());
+}
+
+function render() {
+	var container = $(".todo-container");
+	container.children().remove();
+	renderTodo(container, "Bálint", balintChores);
+	renderTodo(container, "Dani", daniChores);
+
+	$("#date").text(`${today} 💩(${weekStart}-${weekEnd})`);
+}
+
+function renderTodo(container, name, chores) {
+	var nameEl = $(`<div class="name">${name}</div>`);
+	container.append(nameEl);
+
+	var listEl = $("<ul></ul>");
+	nameEl.after(listEl);
+	chores.forEach(ch => {
+		var itemEl = $("<li></li>");
+		listEl.append(itemEl);
+		itemEl.append(`<span class="title">${getChoreTitle(ch)}:</span>`);
+		itemEl.append(`<span class="description"> ${getChoreDescription(ch)}</span>`);
+	})
+}
 
 $(() => {
-	window.app = new AppComponent();
+	moveToNow();
 });
-
-class AppComponent {
-
-	daniChores = [];
-	balintChores = [];
-	today = "";
-	currentTime;
-	weekStart;
-	weekEnd;
-
-	constructor() {
-		moment.locale('hu');
-		this.moveToNow();
-	}
-
-	updateWeek(time) {
-		this.currentTime = time;
-		this.weekStart = moment(time).startOf("isoWeek").format("MM.DD.");
-		this.weekEnd = moment(time).endOf("isoWeek").format("MM.DD.");
-		let weeksPassed = time.diff(startingDate, "weeks");
-		let idx = (weeksPassed % 8 + 8) % 8;
-		let row = weeks[idx];
-		let dani = [];
-		let balint = [];
-		for (let i = 0; i < row.length; i++) {
-			switch (row.charAt(i)) {
-				case "D":
-					dani.push(cols[i]);
-					break;
-				case "B":
-					balint.push(cols[i]);
-					break;
-			}
-		}
-
-		this.daniChores = dani;
-		this.balintChores = balint;
-		this.today = time.format("YYYY. MM. DD");
-
-		this.render();
-	}
-
-	moveWeek(num) {
-		this.updateWeek(moment(this.currentTime).add(num, "week"));
-	}
-
-	moveToNow() {
-		this.updateWeek(moment().utc());
-	}
-
-	render() {
-		let container = $(".todo-container");
-		container.children().remove();
-		this.renderTodo(container, "Bálint", this.balintChores);
-		this.renderTodo(container, "Dani", this.daniChores);
-
-		$("#date").text(`${this.today} 💩(${this.weekStart}-${this.weekEnd})`);
-	}
-	
-	renderTodo(container, name, chores) {
-		let nameEl = $(`<div class="name">${name}</div>`);
-		container.append(nameEl);
-
-		let listEl = $("<ul></ul>");
-		nameEl.after(listEl);
-		chores.forEach(ch => {
-			let itemEl = $("<li></li>");
-			listEl.append(itemEl);
-			itemEl.append(`<span class="title">${getChoreTitle(ch)}:</span>`);
-			itemEl.append(`<span class="description"> ${getChoreDescription(ch)}</span>`);
-		})
-	}
-}
