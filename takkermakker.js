@@ -1,13 +1,13 @@
 
 var weeks = [
-	"BBxDxxB",
-	"DxDxxBx",
-	"BDxBxxx",
-	"DxBxBxx",
-	"BBxDxxD",
-	"DxDxxDx",
-	"BDxBxxx",
-	"DxBxDxx",
+	"BBxDxxBD",
+	"DxDxxBxB",
+	"BDxBxxxD",
+	"DxBxBxxB",
+	"BBxDxxDD",
+	"DxDxxDxB",
+	"BDxBxxxD",
+	"DxBxDxxB",
 ];
 
 var cols = [
@@ -18,6 +18,7 @@ var cols = [
 	"FRIDGE",
 	"STOVE",
 	"BALCONY",
+	"MILK",
 ];
 
 var startingDate = moment("2018-10-01");
@@ -25,13 +26,14 @@ moment.locale('hu');
 
 function getChoreTitle(chore) {
 	switch (chore) {
-		case "VACUUM": return "porszívózás";
-		case "WASHUP": return "felmosás";
-		case "DUSTING": return "törölgetés";
-		case "DISINFECTION": return "fertőtlenítés";
-		case "FRIDGE": return "hűtő takarítás";
-		case "STOVE": return "sütő takarítás";
-		case "BALCONY": return "erkély - csak szezonban";
+		case "VACUUM": return "🧹 porszívózás";
+		case "WASHUP": return "🧹💦 felmosás";
+		case "DUSTING": return "🧽💨 törölgetés";
+		case "DISINFECTION": return "🚽🛁fertőtlenítés";
+		case "FRIDGE": return "❄️ hűtő takarítás";
+		case "STOVE": return "🔥 sütő takarítás";
+		case "BALCONY": return "☀️ erkély - csak szezonban";
+		case "MILK": return "🐄 tej";
 	}
 	return "";
 }
@@ -45,6 +47,7 @@ function getChoreDescription(chore) {
 		case "FRIDGE": return "kipakolás, kimosás, fertőtlenítés, kifolyó tisztítás, kiszedhető komponensek tisztítása, szükség esetén leolvasztás, mosogatógép, tükrök";
 		case "STOVE": return "kívül belül zsírtalanítás, fertőtlenítés, a szét- és kiszedhető komponensek zsírtalanítása, fiók, a sütő körüli fal zsírtalanítása, mikró";
 		case "BALCONY": return "söprés (a rács és az ajtó között is), felmosás, bútorok letörlése, rács letörlése, párkány letörlése";
+		case "MILK": return "gondoskodni a tej supplyról, legalább 1 bontatlan tej legyen a hűtőben";
 	}
 	return "";
 }
